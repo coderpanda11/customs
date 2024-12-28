@@ -7,14 +7,17 @@ import {
   Button,
   ThemeProvider,
   createTheme,
-  CssBaseline
+  CssBaseline,
+  Box
 } from '@mui/material';
-import VoiceAssistant from './components/VoiceAssistant/VoiceAssistant';
-import { OpenAIProvider } from './components/OpenAI/OpenAIContext';
+import VoiceAssistant from './components/VoiceAssistant/VoiceAssistant.mjs';
+import { OpenAIProvider } from './components/OpenAI/OpenAIContext.mjs';
 import EvidenceCollection from './components/EvidenceCollection';
 import CaseStudies from './components/CaseStudies';
 import ReportGeneration from './components/ReportGeneration';
 import TrainingLinks from './components/TrainingLinks';
+import Team from './components/Team/Team';
+import logo from './Images/logo.png';
 import "./App.css";
 
 // Create a custom theme
@@ -64,36 +67,45 @@ function App() {
           <div className="App">
             <AppBar position="static">
               <Toolbar>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                  Evidence Collection Hub
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                  <img src={logo} alt="Logo" className="app-logo" />
+                  <Typography variant="h6" component="div" sx={{ ml: 2 }}>
+                    Evidence Collection Hub
+                  </Typography>
+                </Box>
                 <Button color="inherit" component={Link} to="/">Home</Button>
                 <Button color="inherit" component={Link} to="/voice-assistant">Voice Assistant</Button>
                 <Button color="inherit" component={Link} to="/evidence-collection">Evidence Guide</Button>
                 <Button color="inherit" component={Link} to="/case-studies">Case Studies</Button>
                 <Button color="inherit" component={Link} to="/report-generation">Report Guide</Button>
                 <Button color="inherit" component={Link} to="/training">Training</Button>
+                <Button color="inherit" component={Link} to="/team">Team</Button>
               </Toolbar>
             </AppBar>
             <main>
               <Routes>
                 <Route path="/" element={
-                  <div className="home-container">
-                    <Typography variant="h4" gutterBottom>
-                      Welcome to the Evidence Collection Hub
-                    </Typography>
-                    <Typography variant="body1">
-                      This platform provides comprehensive guidance for evidence collection, 
-                      report generation, and training resources. Use the voice assistant 
-                      for hands-free navigation and guidance.
-                    </Typography>
-                  </div>
+                  <>
+                    <div className="home-container">
+                      <img src={logo} alt="Logo" className="home-logo" />
+                      <Typography variant="h4" gutterBottom>
+                        Welcome to the Evidence Collection Hub
+                      </Typography>
+                      <Typography variant="body1">
+                        This platform provides comprehensive guidance for evidence collection, 
+                        report generation, and training resources. Use the voice assistant 
+                        for hands-free navigation and guidance.
+                      </Typography>
+                    </div>
+                    <Team />
+                  </>
                 } />
                 <Route path="/voice-assistant" element={<VoiceAssistant />} />
                 <Route path="/evidence-collection" element={<EvidenceCollection />} />
                 <Route path="/case-studies" element={<CaseStudies />} />
                 <Route path="/report-generation" element={<ReportGeneration />} />
                 <Route path="/training" element={<TrainingLinks />} />
+                <Route path="/team" element={<Team />} />
               </Routes>
             </main>
           </div>

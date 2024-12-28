@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { 
   Container, 
@@ -13,56 +13,72 @@ import {
 } from '@mui/material';
 import MicIcon from '@mui/icons-material/Mic';
 import StopIcon from '@mui/icons-material/Stop';
-import { useOpenAI } from '../OpenAI/OpenAIContext';
+import { useOpenAI } from '../OpenAI/OpenAIContext.mjs';
 import './VoiceAssistant.css';
 
 const VoiceAssistant = () => {
   const [response, setResponse] = useState("");
-  const [lastTranscript, setLastTranscript] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { generateResponse } = useOpenAI();
+
+  const handleVoiceCommand = async (command) => {
+    try {
+      setIsLoading(true);
+      const responseText = await generateResponse(command);
+      setResponse(responseText);
+      
+      const speech = new SpeechSynthesisUtterance(responseText);
+      window.speechSynthesis.speak(speech);
+    } catch (error) {
+      console.error('Error:', error);
+      setResponse("I apologize, but there was an error processing your request.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const {
     transcript,
     listening,
     resetTranscript,
     browserSupportsSpeechRecognition
-  } = useSpeechRecognition();
-
-  // Handle transcript changes
-  useEffect(() => {
-    const processTranscript = async () => {
-      if (transcript && transcript !== lastTranscript && !listening) {
-        try {
-          setIsLoading(true);
-          const responseText = await generateResponse(transcript);
-          setResponse(responseText);
-          
-          // Use browser's built-in speech synthesis
-          const speech = new SpeechSynthesisUtterance(responseText);
-          window.speechSynthesis.speak(speech);
-        } catch (error) {
-          console.error('Error:', error);
-          setResponse("I apologize, but there was an error processing your request.");
-        } finally {
-          setIsLoading(false);
+  } = useSpeechRecognition({
+    commands: [{
+      command: '*',
+      callback: (command) => {
+        if (!isLoading) {
+          handleVoiceCommand(command);
         }
-        setLastTranscript(transcript);
       }
-    };
+    }]
+  });
 
-    processTranscript();
-  }, [transcript, lastTranscript, listening, generateResponse]);
+  useEffect(() => {
+    if (!browserSupportsSpeechRecognition) {
+      console.error('Browser does not support speech recognition.');
+    }
+  }, [browserSupportsSpeechRecognition]);
 
-  const startListening = () => {
-    resetTranscript();
-    setLastTranscript("");
-    setResponse("");
-    SpeechRecognition.startListening({ continuous: true });
+  const startListening = async () => {
+    try {
+      resetTranscript();
+      setResponse("");
+      window.speechSynthesis.cancel();
+      await SpeechRecognition.startListening();
+    } catch (error) {
+      console.error('Error starting speech recognition:', error);
+    }
   };
 
-  const stopListening = () => {
-    SpeechRecognition.stopListening();
+  const stopListening = async () => {
+    try {
+      await SpeechRecognition.stopListening();
+      if (transcript) {
+        handleVoiceCommand(transcript);
+      }
+    } catch (error) {
+      console.error('Error stopping speech recognition:', error);
+    }
   };
 
   if (!browserSupportsSpeechRecognition) {
@@ -119,8 +135,7 @@ const VoiceAssistant = () => {
             onClick={() => {
               resetTranscript();
               setResponse("");
-              setLastTranscript("");
-              window.speechSynthesis.cancel(); // Stop any ongoing speech
+              window.speechSynthesis.cancel();
             }}
             className="clear-button"
           >

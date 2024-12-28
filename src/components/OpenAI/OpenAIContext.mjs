@@ -1,18 +1,19 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 import OpenAI from 'openai';
 
 const OpenAIContext = createContext();
 
 export const OpenAIProvider = ({ children }) => {
   const openai = new OpenAI({
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true
+    apiKey: "openai-api-key",
+    dangerouslyAllowBrowser: true
   });
 
   const generateResponse = async (userInput) => {
     try {
+      console.log("Sending request to OpenAI...");
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        store: true,
+        model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
@@ -22,13 +23,16 @@ export const OpenAIProvider = ({ children }) => {
             role: "user",
             content: userInput
           }
-        ]
+        ],
+        temperature: 0.7,
+        max_tokens: 500
       });
 
+      console.log("Response received:", completion);
       return completion.choices[0].message.content;
     } catch (error) {
-      console.error('OpenAI Error:', error);
-      throw error;
+      console.error('OpenAI Error Details:', error);
+      throw new Error(`Failed to generate response: ${error.message}`);
     }
   };
 

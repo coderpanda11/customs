@@ -3,8 +3,32 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
 }
 
+.app-logo {
+  height: 40px;
+  width: auto;
+  margin-right: 1rem;
+}
+
+.home-logo {
+  width: auto;
+  height: 150px;
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 main {
-  padding: 20px;
+  padding: 10px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -29,6 +53,15 @@ main {
 }
 
 @media (max-width: 600px) {
+  .app-logo {
+    height: 32px;
+  }
+
+  .home-logo {
+    width: 120px;
+    margin-bottom: 1.5rem;
+  }
+
   .MuiToolbar-root {
     flex-direction: column;
     padding: 1rem !important;
