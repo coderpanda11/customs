@@ -2,7 +2,7 @@
   "name": "customs",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sidharthpanda.github.io/customs",
+  "homepage": "https://coderpanda11.github.io/customs",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -18,12 +18,12 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +44,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^6.2.0"
+    "gh-pages": "^6.1.0"
   }
 }
