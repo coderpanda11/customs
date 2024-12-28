@@ -5,7 +5,7 @@ const OpenAIContext = createContext();
 
 export const OpenAIProvider = ({ children }) => {
   const openai = new OpenAI({
-    apiKey: "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", dangerouslyAllowBrowser: true
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY, dangerouslyAllowBrowser: true
   });
 
   const generateResponse = async (userInput) => {
